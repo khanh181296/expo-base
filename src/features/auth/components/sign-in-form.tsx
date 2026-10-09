@@ -30,6 +30,7 @@ export function SignInForm() {
       <FormInput
         control={control}
         name="email"
+        testID="sign-in-email"
         label={t('auth.email')}
         placeholder={t('auth.emailPlaceholder')}
         autoCapitalize="none"
@@ -43,6 +44,7 @@ export function SignInForm() {
       <FormInput
         control={control}
         name="password"
+        testID="sign-in-password"
         label={t('auth.password')}
         placeholder={t('auth.passwordPlaceholder')}
         secureTextEntry
@@ -56,6 +58,7 @@ export function SignInForm() {
       </TextLink>
       <Button
         className="mt-2"
+        testID="sign-in-submit"
         label={t('auth.signIn')}
         icon={LogIn}
         loading={signIn.isPending}

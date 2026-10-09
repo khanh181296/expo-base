@@ -30,10 +30,29 @@ Khi đã cài app lên máy, chỉ cần `pnpm start`.
 
 Xem nhanh giao diện không cần build native: `pnpm start` rồi bấm `w` để mở bản web.
 
+**App mới từ base này:** `pnpm rename --name "Tên App" --bundle-id com.cty.app`, rồi làm theo
+[Trước khi dùng cho dự án thật](#trước-khi-dùng-cho-dự-án-thật). Tổng quan nhanh: [docs/BASE-STATUS.md](docs/BASE-STATUS.md).
+
+Xem nhanh giao diện không cần build native: `pnpm start` rồi bấm `w` để mở bản web.
+
 Mặc định `.env.development` bật `USE_MOCK_API=true`, nên app chạy được ngay không cần backend.
 Đăng nhập bằng email bất kỳ và mật khẩu từ 8 ký tự trở lên.
 Access token mock hết hạn sau 60 giây, dùng để thử luồng refresh token.
 Đăng ký bằng `taken@example.com` để thử lỗi email đã tồn tại.
+
+## Màn hình và tính năng có sẵn
+
+| Route / tính năng                                             | Mô tả                                                                                              |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `/sign-in`, `/sign-up`, `/forgot-password`                    | Auth, nút đổi ngôn ngữ EN \| VI (`AuthScreen`)                                                     |
+| `/`                                                           | Home                                                                                               |
+| `/notes`                                                      | **Feature mẫu**: cuộn vô hạn, kéo tải lại, tạo/sửa, xoá optimistic. Copy khuôn này cho feature mới |
+| `/settings`                                                   | Sáng/tối, ngôn ngữ, bật thông báo, đăng xuất, version                                              |
+| App gate                                                      | `GET /app/config` → bắt buộc cập nhật (`minVersion`) hoặc bảo trì                                  |
+| OTA                                                           | Kiểm tra EAS Update khi mở app và khi quay lại app, hỏi khởi động lại                              |
+| Push                                                          | Xin quyền, gửi token lên `POST /devices`, bấm thông báo có `data.url` thì mở route đó              |
+| Analytics                                                     | `analytics.track({ name: ... })` có type; cắm provider bằng `setAnalyticsProvider`                 |
+| Đăng ký bằng `taken@example.com` để thử lỗi email đã tồn tại. |
 
 ## Màn hình có sẵn
 
@@ -75,8 +94,9 @@ src/
   features/<name>/     Code theo nghiệp vụ: api, hooks, store, schemas, components
     index.ts           Public API: bên ngoài chỉ import từ đây
   components/
-    ui/                Design system: Button, Text, Input, FormInput, Screen, Sheet...
-    feedback/          toast, dialog.confirm, loading overlay (gọi được từ mọi nơi)
+    ui/                Button, Text, Input, FormInput, Select, Switch, Checkbox, DatePicker,
+                       OtpInput, Sheet, Skeleton, EmptyState, ErrorState, ...
+    feedback/          toast, dialog.confirm, loading, banner mất mạng
   lib/                 Hạ tầng không phụ thuộc feature
     api/               client, errors, query-client, mock-adapter
     storage/           kv (MMKV), secureStorage, keys
@@ -97,6 +117,9 @@ src/
 - **Token chỉ nằm trong SecureStore.** MMKV không mã hoá, chỉ dùng cho dữ liệu không nhạy cảm.
 - **Màu:** sửa đồng thời `src/global.css` và `src/lib/theme/palette.ts`. Test sẽ báo lỗi nếu 2 file lệch nhau.
 - Import qua alias `@/…`. Lỗi validate trong schema zod là i18n key.
+- **Web:** file `*.web.ts(x)` thay bản native khi chạy web (ví dụ `secure.web.ts`, `date-picker.web.tsx`).
+- **Mock:** endpoint mới thì thêm vào `src/lib/api/mock-adapter.ts` cùng contract với API thật.
+- **E2E:** phần tử cần test có `testID`; luồng Maestro nằm trong `.maestro/`.
 - **Web:** file `*.web.ts` thay thế bản native khi chạy web (ví dụ `secure.web.ts`).
 
 ### Thêm feature mới
@@ -135,16 +158,24 @@ await loading.wrap(upload())
 | ------------------------------------------------------- | ------------------------------------------------------------ |
 | `pnpm check`                                            | typecheck, lint, format và test (giống CI)                   |
 | `pnpm typecheck` / `lint` / `format` / `test`           | Chạy riêng từng bước                                         |
+| `pnpm test:coverage`                                    | Test kèm ngưỡng coverage (CI dùng lệnh này)                  |
+| `pnpm e2e`                                              | Maestro E2E (cần development build trên simulator)           |
+| `pnpm rename`                                           | Đổi tên app, slug, scheme, bundle ID                         |
 | `pnpm doctor`                                           | expo-doctor                                                  |
 | `pnpm prebuild`                                         | Sinh lại `ios/` và `android/` (không commit hai thư mục này) |
 | `pnpm build:dev` / `build:staging` / `build:production` | EAS Build                                                    |
+
+Quy trình đóng góp: [CONTRIBUTING.md](CONTRIBUTING.md). Lý do các lựa chọn kỹ thuật: [docs/adr](docs/adr).
+Renovate tự mở PR nâng thư viện mỗi thứ Hai (trừ package do Expo quản lý).
 
 Commit theo Conventional Commits (`feat: …`, `fix: …`), được commitlint kiểm tra.
 
 ## Trước khi dùng cho dự án thật
 
-- [ ] Đổi `BASE` trong `env.js` (tên app, slug, scheme, bundle ID)
-- [ ] Chạy `eas init` và điền `EAS_PROJECT_ID`, `EXPO_ACCOUNT_OWNER`
+- [ ] `pnpm rename --name "Tên App" --bundle-id com.cty.app`
+- [ ] Chạy `eas init` và điền `EAS_PROJECT_ID`, `EXPO_ACCOUNT_OWNER` (bắt buộc cho OTA và push)
+- [ ] Backend cung cấp `GET /app/config` và `POST/DELETE /devices` (hoặc bỏ app gate, push)
+- [ ] Đổi `appId` trong `.maestro/*.yaml`; bật Renovate cho repo
 - [ ] Đổi icon và splash trong `assets/`
 - [ ] Sửa `features/auth/api.ts` cho khớp API thật, rồi tắt `USE_MOCK_API`
 - [ ] Đổi token màu trong `global.css` và `palette.ts`

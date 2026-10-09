@@ -1,0 +1,21 @@
+appId: com.example.expobase.dev
+name: Create and delete a note
+tags: [notes]
+---
+- runFlow: sign-in.yaml
+- tapOn:
+    id: tab-notes
+- tapOn:
+    id: notes-create
+- tapOn:
+    id: note-title
+- inputText: Maestro note
+- tapOn:
+    id: note-save
+- assertVisible: Maestro note
+- tapOn: Maestro note
+- tapOn:
+    id: note-delete
+- tapOn:
+    id: dialog-confirm
+- assertNotVisible: Maestro note

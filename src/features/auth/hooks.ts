@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 
+import { analytics } from '@/lib/analytics'
+
 import { authApi } from './api'
 import { useAuthStore } from './store'
 import { tokenStore } from './token-store'
@@ -13,7 +15,10 @@ export function useSignIn() {
   const signIn = useAuthStore((state) => state.signIn)
   return useMutation({
     mutationFn: authApi.signIn,
-    onSuccess: signIn,
+    onSuccess: async (response) => {
+      await signIn(response)
+      analytics.track({ name: 'sign_in', method: 'email' })
+    },
   })
 }
 
@@ -21,7 +26,10 @@ export function useSignUp() {
   const signIn = useAuthStore((state) => state.signIn)
   return useMutation({
     mutationFn: authApi.signUp,
-    onSuccess: signIn,
+    onSuccess: async (response) => {
+      await signIn(response)
+      analytics.track({ name: 'sign_up', method: 'email' })
+    },
   })
 }
 
@@ -37,7 +45,10 @@ export function useSignOut() {
       // Best effort: the local session is cleared even if the server call fails.
       if (refreshToken) await authApi.signOut(refreshToken).catch(() => undefined)
     },
-    onSettled: signOut,
+    onSettled: async () => {
+      analytics.track({ name: 'sign_out' })
+      await signOut()
+    },
   })
 }
 

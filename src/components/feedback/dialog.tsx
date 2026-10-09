@@ -60,6 +60,7 @@ export function DialogHost() {
               />
               <Button
                 className="flex-1"
+                testID="dialog-confirm"
                 variant={current.destructive ? 'destructive' : 'primary'}
                 label={current.confirmLabel ?? i18n.t('common.confirm')}
                 onPress={() => close(true)}

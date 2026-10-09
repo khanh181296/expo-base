@@ -33,6 +33,7 @@ export default function AppLayout() {
         name="notes"
         options={{
           title: t('tabs.notes'),
+          tabBarButtonTestID: 'tab-notes',
           tabBarIcon: ({ color, size }) => <NotebookPen color={color} size={size} />,
         }}
       />

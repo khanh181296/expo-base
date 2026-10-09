@@ -1,0 +1,17 @@
+# Requires USE_MOCK_API=true (development).
+appId: com.example.expobase.dev
+name: Sign in with the mock API
+tags: [auth]
+---
+- launchApp:
+    clearState: true
+- tapOn:
+    id: sign-in-email
+- inputText: e2e@example.com
+- tapOn:
+    id: sign-in-password
+- inputText: test1234
+- tapOn:
+    id: sign-in-submit
+- assertVisible:
+    id: tab-notes

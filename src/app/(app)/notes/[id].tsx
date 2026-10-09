@@ -44,7 +44,13 @@ export default function NoteDetailScreen() {
           })
         }
       >
-        <Button variant="outline" icon={Trash2} label={t('common.delete')} onPress={onDelete} />
+        <Button
+          testID="note-delete"
+          variant="outline"
+          icon={Trash2}
+          label={t('common.delete')}
+          onPress={onDelete}
+        />
       </NoteForm>
     </Screen>
   )

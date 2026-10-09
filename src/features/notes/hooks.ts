@@ -6,6 +6,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 
+import { analytics } from '@/lib/analytics'
 import type { Paginated } from '@/lib/api'
 
 import { notesApi } from './api'
@@ -50,7 +51,10 @@ export function useCreateNote() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (input: NoteInput) => notesApi.create(input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: noteKeys.lists() }),
+    onSuccess: () => {
+      analytics.track({ name: 'note_created' })
+      return queryClient.invalidateQueries({ queryKey: noteKeys.lists() })
+    },
   })
 }
 
@@ -70,6 +74,7 @@ export function useDeleteNote() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: notesApi.remove,
+    onSuccess: () => analytics.track({ name: 'note_deleted' }),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: noteKeys.lists() })
       const previous = queryClient.getQueryData<NotesPages>(noteKeys.lists())

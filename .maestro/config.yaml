@@ -1,0 +1,5 @@
+# Run with: pnpm e2e  (needs a development build installed on a simulator/emulator)
+flows:
+  - '*.yaml'
+excludeTags:
+  - wip

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits", "group:monorepos"],
+  "timezone": "Asia/Ho_Chi_Minh",
+  "schedule": ["before 9am on monday"],
+  "prConcurrentLimit": 5,
+  "rangeStrategy": "pin",
+  "packageRules": [
+    {
+      "description": "Expo SDK pins these; upgrade them together with `npx expo install --fix`",
+      "matchPackageNames": [
+        "expo",
+        "react",
+        "react-dom",
+        "react-native",
+        "react-native-*",
+        "@react-native-community/*",
+        "@shopify/flash-list",
+        "@sentry/react-native",
+        "jest-expo",
+        "babel-preset-expo",
+        "eslint-config-expo"
+      ],
+      "matchPackagePrefixes": ["expo-", "@expo/"],
+      "enabled": false
+    },
+    {
+      "description": "NativeWind 4 needs Tailwind 3",
+      "matchPackageNames": ["tailwindcss", "tailwind-merge", "tailwind-variants"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Batch safe dev tooling updates",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "dev tooling",
+      "automerge": true
+    }
+  ]
+}

@@ -2,13 +2,14 @@ import '@/global.css'
 import '@/lib/theme/interop'
 import '@/lib/i18n'
 
-import { Stack, useNavigationContainerRef } from 'expo-router'
+import { Stack, useNavigationContainerRef, usePathname } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
 
 import { ErrorFallback } from '@/components/error-fallback'
 import { AppGate } from '@/features/app-config'
 import { registerAuthSession, useAuthStore } from '@/features/auth'
+import { analytics } from '@/lib/analytics'
 import { setupQueryManagers } from '@/lib/api'
 import {
   initMonitoring,
@@ -36,9 +37,16 @@ function RootLayout() {
     navigationIntegration.registerNavigationContainer(navigationRef)
   }, [navigationRef])
 
+  const pathname = usePathname()
+
   useEffect(() => {
     setMonitoringUser(user)
+    analytics.identify(user?.id ?? null)
   }, [user])
+
+  useEffect(() => {
+    analytics.screen(pathname)
+  }, [pathname])
 
   return (
     <AppProviders>

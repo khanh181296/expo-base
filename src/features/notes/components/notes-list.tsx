@@ -57,6 +57,7 @@ export function NotesList() {
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t('notes.create')}
+        testID="notes-create"
         onPress={openNew}
         className="absolute bottom-6 right-6 size-14 items-center justify-center rounded-full bg-primary shadow-lg active:opacity-80"
       >

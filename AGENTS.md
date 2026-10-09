@@ -32,6 +32,12 @@ Run `pnpm check` before declaring any task done.
 - Every user-facing string goes through i18n (`src/translations/{en,vi}.json`). Zod messages are i18n keys.
 - Env vars: declare in the schema in `env.js`, read with `Env` from `@/lib/env`. Never put secrets in client env.
 - Use the `@/` alias, no deep relative imports. Use the components in `@/components/ui` before adding new ones.
+- New features copy the shape of `src/features/notes` (api.ts, hooks.ts with query keys, schemas.ts, components/, index.ts) and get tests next to the hooks.
+- Signed-out screens use `AuthScreen` from `@/features/auth` and belong to the `!signedIn` `Stack.Protected` group in `src/app/_layout.tsx`.
+- Report unexpected errors with `captureError` (`@/lib/monitoring`); track events with `analytics.track` (`@/lib/analytics`), adding the event to the `AnalyticsEvent` union.
+- With `USE_MOCK_API`, add new endpoints to `src/lib/api/mock-adapter.ts` with the real contract.
+- Web-specific implementations go in `*.web.ts(x)` files. Elements used by Maestro flows get a `testID`.
+- RNTL v14 is async: `await render(...)`, `await fireEvent...`, wrap async updates in `await act(async () => ...)`.
 - Signed-out screens use `AuthScreen` from `@/features/auth` (heading + EN | VI toggle) and are listed in the `!signedIn` `Stack.Protected` group in `src/app/_layout.tsx`.
 - Report unexpected errors with `captureError` from `@/lib/monitoring`; never call Sentry directly. Sentry is off in development builds.
 - When the mock API is on (`USE_MOCK_API`), add new endpoints to `src/lib/api/mock-adapter.ts` with the same contract as the real API.

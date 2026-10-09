@@ -27,6 +27,7 @@ export function NoteForm({ defaultValues, submitting, onSubmit, children }: Note
       <FormInput
         control={control}
         name="title"
+        testID="note-title"
         label={t('notes.titleLabel')}
         placeholder={t('notes.titlePlaceholder')}
         returnKeyType="next"
@@ -40,6 +41,7 @@ export function NoteForm({ defaultValues, submitting, onSubmit, children }: Note
       />
       <Button
         className="mt-2"
+        testID="note-save"
         label={t('common.save')}
         icon={Save}
         loading={submitting}

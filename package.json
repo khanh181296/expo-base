@@ -5,6 +5,7 @@
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.2.14",
     "@hookform/resolvers": "^5.9.1",
+    "@react-native-community/datetimepicker": "9.1.0",
     "@react-native-community/netinfo": "12.0.1",
     "@sentry/react-native": "~7.11.0",
     "@shopify/flash-list": "2.0.2",
@@ -96,12 +97,13 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "doctor": "expo-doctor",
-    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
+    "check": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test:coverage",
     "build:dev": "eas build --profile development",
     "build:staging": "eas build --profile staging",
     "build:production": "eas build --profile production",
     "prepare": "husky",
-    "rename": "node scripts/rename.js"
+    "rename": "node scripts/rename.js",
+    "e2e": "maestro test .maestro"
   },
   "private": true,
   "packageManager": "pnpm@10.34.6",

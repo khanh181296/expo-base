@@ -14,7 +14,7 @@ module.exports = defineConfig([
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       'import/no-duplicates': 'error',
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-console': ['warn', { allow: ['info', 'warn', 'error'] }],
       'import/no-named-as-default-member': 'off',
       'no-restricted-imports': [
         'error',
