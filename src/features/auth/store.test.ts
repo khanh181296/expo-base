@@ -1,5 +1,7 @@
 import * as SecureStore from 'expo-secure-store'
 
+import { kv } from '@/lib/storage'
+
 import { useAuthStore } from './store'
 import { tokenStore } from './token-store'
 
@@ -18,6 +20,13 @@ describe('auth store', () => {
     expect(
       JSON.stringify(useAuthStore.persist.getOptions().partialize?.(useAuthStore.getState())),
     ).not.toContain('access')
+  })
+
+  it('a fresh install drops tokens left in the Keychain by a previous install', async () => {
+    await SecureStore.setItemAsync('auth.tokens', JSON.stringify(session.tokens))
+    kv.remove('app.installed')
+
+    expect(await tokenStore.load()).toBeNull()
   })
 
   it('hydrate restores the session from secure storage', async () => {

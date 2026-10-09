@@ -3,8 +3,11 @@ appId: com.example.expobase.dev
 name: Sign in with the mock API
 tags: [auth]
 ---
-- launchApp:
-    clearState: true
+- runFlow: subflows/launch.yaml
+- extendedWaitUntil:
+    visible:
+      id: sign-in-email
+    timeout: 60000
 - tapOn:
     id: sign-in-email
 - inputText: e2e@example.com

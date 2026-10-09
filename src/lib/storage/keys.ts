@@ -3,4 +3,5 @@ export const STORAGE_KEYS = {
   colorScheme: 'app.color-scheme',
   authTokens: 'auth.tokens',
   authStore: 'auth.store',
+  installMarker: 'app.installed',
 } as const

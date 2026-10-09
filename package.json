@@ -111,7 +111,7 @@
     "build:production": "eas build --profile production",
     "prepare": "husky",
     "rename": "node scripts/rename.js",
-    "e2e": "maestro test .maestro"
+    "e2e": "maestro test .maestro -e DEV_CLIENT_URL=expobase-dev://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8082"
   },
   "private": true,
   "packageManager": "pnpm@10.34.6",

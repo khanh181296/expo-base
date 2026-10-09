@@ -1,0 +1,29 @@
+# Fresh start. For development builds pass DEV_CLIENT_URL so the app loads JS from Metro:
+#   pnpm e2e  (see package.json)
+appId: com.example.expobase.dev
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    when:
+      true: ${DEV_CLIENT_URL}
+    commands:
+      - openLink: ${DEV_CLIENT_URL}
+- waitForAnimationToEnd
+# Android may stay on the dev launcher; pick the Metro server from the list
+- runFlow:
+    when:
+      visible: 'DEVELOPMENT SERVERS'
+    commands:
+      - tapOn: '.*:8082'
+# Dev client shows an onboarding sheet on first launch
+- tapOn:
+    text: Continue
+    optional: true
+# The dev menu may open on launch; tap the backdrop to close it
+- runFlow:
+    when:
+      visible: Go home
+    commands:
+      - tapOn:
+          point: 50%,10%

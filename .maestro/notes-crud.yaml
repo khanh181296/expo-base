@@ -10,12 +10,16 @@ tags: [notes]
 - tapOn:
     id: note-title
 - inputText: Maestro note
+# Closing the keyboard shifts the layout; do it before tapping Save
+- hideKeyboard
 - tapOn:
     id: note-save
-- assertVisible: Maestro note
-- tapOn: Maestro note
+- waitForAnimationToEnd
+# Card text is merged into one accessibility label on iOS, so match the prefix
+- assertVisible: 'Maestro note.*'
+- tapOn: 'Maestro note.*'
 - tapOn:
     id: note-delete
 - tapOn:
     id: dialog-confirm
-- assertNotVisible: Maestro note
+- assertNotVisible: 'Maestro note.*'
