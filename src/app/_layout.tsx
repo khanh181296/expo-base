@@ -34,9 +34,6 @@ function RootNavigator() {
     if (status !== 'loading') void SplashScreen.hideAsync()
   }, [status])
 
-  // Splash stays visible until the session is restored from secure storage.
-  if (status === 'loading') return null
-
   const signedIn = status === 'signedIn'
 
   return (

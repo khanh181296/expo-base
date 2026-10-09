@@ -9,9 +9,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 import { FeedbackHosts } from '@/components/feedback'
 import { queryClient } from '@/lib/api'
-import { useNavigationTheme } from '@/lib/theme'
+import { useNavigationTheme, useWebColorSchemeSync } from '@/lib/theme'
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
+  useWebColorSchemeSync()
   const navigationTheme = useNavigationTheme()
 
   return (

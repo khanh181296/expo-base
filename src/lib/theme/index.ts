@@ -1,6 +1,7 @@
 import { DarkTheme, DefaultTheme, type Theme } from 'expo-router'
 import { colorScheme, useColorScheme } from 'nativewind'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+import { Appearance, Platform } from 'react-native'
 import { useMMKVString } from 'react-native-mmkv'
 
 import { kv, kvStorage, STORAGE_KEYS } from '@/lib/storage'
@@ -15,10 +16,39 @@ export type ColorSchemePreference = (typeof COLOR_SCHEME_PREFERENCES)[number]
 const isPreference = (value: unknown): value is ColorSchemePreference =>
   COLOR_SCHEME_PREFERENCES.includes(value as ColorSchemePreference)
 
-/** Apply the saved preference. Call once at startup, before the first render. */
-export function loadColorSchemePreference() {
+function applyColorScheme(preference: ColorSchemePreference) {
+  // Web toggles a `dark` class, so "system" has to be resolved to a concrete scheme there.
+  if (Platform.OS === 'web' && preference === 'system') {
+    colorScheme.set(Appearance.getColorScheme() === 'dark' ? 'dark' : 'light')
+    return
+  }
+  colorScheme.set(preference)
+}
+
+const readPreference = (): ColorSchemePreference => {
   const saved = kvStorage.getString(STORAGE_KEYS.colorScheme)
-  colorScheme.set(isPreference(saved) ? saved : 'system')
+  return isPreference(saved) ? saved : 'system'
+}
+
+/** Apply the saved preference on native. Call once at startup, before the first render. */
+export function loadColorSchemePreference() {
+  if (Platform.OS !== 'web') applyColorScheme(readPreference())
+}
+
+/**
+ * Web only: NativeWind registers its dark mode flag when the stylesheet loads and resets
+ * the scheme at that point, so the preference is applied after mount and re-applied
+ * when the OS theme changes while following the system.
+ */
+export function useWebColorSchemeSync() {
+  useEffect(() => {
+    if (Platform.OS !== 'web') return
+    applyColorScheme(readPreference())
+    const subscription = Appearance.addChangeListener(() => {
+      if (readPreference() === 'system') applyColorScheme('system')
+    })
+    return () => subscription.remove()
+  }, [])
 }
 
 export function useColorSchemePreference() {
@@ -27,7 +57,7 @@ export function useColorSchemePreference() {
 
   const setPreference = (value: ColorSchemePreference) => {
     setSaved(value)
-    colorScheme.set(value)
+    applyColorScheme(value)
   }
 
   return { preference, setPreference }

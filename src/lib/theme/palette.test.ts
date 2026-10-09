@@ -4,7 +4,7 @@ import path from 'node:path'
 import { COLOR_TOKENS, palette } from './palette'
 
 const css = fs.readFileSync(path.join(__dirname, '../../global.css'), 'utf8')
-const [lightBlock = '', darkBlock = ''] = css.split('@media (prefers-color-scheme: dark)')
+const [lightBlock = '', darkBlock = ''] = css.split('.dark:root')
 
 const readVars = (block: string) =>
   Object.fromEntries([...block.matchAll(/--([\w-]+):\s*([\d ]+);/g)].map((m) => [m[1], m[2]]))
