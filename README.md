@@ -150,6 +150,7 @@ await loading.wrap(upload())
 - Tự ghi crash, lỗi màn hình (ErrorBoundary), hiệu năng điều hướng, gắn `environment` và `release` theo version.
 - Chỉ gửi `user.id`, không gửi email (`sendDefaultPii: false`).
 - Gửi lỗi tay: `captureError(error, { context })` từ `@/lib/monitoring`.
+- Upload source map đang **tắt** (`SENTRY_DISABLE_AUTO_UPLOAD` trong `eas.json`) vì chưa có Sentry project. Khi đã có `SENTRY_ORG`, `SENTRY_PROJECT` và `SENTRY_AUTH_TOKEN`, xoá dòng đó ở profile staging/production.
 - Source map được upload khi build EAS nếu có `SENTRY_AUTH_TOKEN` (đặt bằng `eas env:create`, không ghi vào file `.env`).
 
 ## Firebase (tuỳ chọn)
