@@ -21,7 +21,26 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "signOutConfirm": "Do you want to sign out?",
-    "mockHint": "Mock API is on: any email and an 8+ character password works."
+    "mockHint": "Mock API is on: any email and an 8+ character password works.",
+    "forgotPasswordLink": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "signUpLink": "Sign up",
+    "haveAccount": "Already have an account?",
+    "signInLink": "Sign in",
+    "signUpTitle": "Create an account",
+    "signUpSubtitle": "Start in less than a minute",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "signUp": "Create account",
+    "forgotTitle": "Forgot password",
+    "forgotSubtitle": "Enter your email and we will send you a link to reset your password.",
+    "sendResetLink": "Send reset link",
+    "resetSentTitle": "Check your email",
+    "resetSentMessage": "If an account exists for {{email}}, a password reset link is on its way.",
+    "backToSignIn": "Back to sign in",
+    "mockSignUpHint": "Mock API: taken@example.com simulates an email that is already registered."
   },
   "home": {
     "greeting": "Hello, {{name}}",
@@ -43,7 +62,9 @@
   "validation": {
     "required": "This field is required",
     "email": "Invalid email address",
-    "passwordMin": "Password must be at least 8 characters"
+    "passwordMin": "Password must be at least 8 characters",
+    "nameMin": "Name must be at least 2 characters",
+    "passwordMismatch": "Passwords do not match"
   },
   "errors": {
     "network": "No internet connection. Please check your network.",

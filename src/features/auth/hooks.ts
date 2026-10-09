@@ -17,6 +17,18 @@ export function useSignIn() {
   })
 }
 
+export function useSignUp() {
+  const signIn = useAuthStore((state) => state.signIn)
+  return useMutation({
+    mutationFn: authApi.signUp,
+    onSuccess: signIn,
+  })
+}
+
+export function useForgotPassword() {
+  return useMutation({ mutationFn: authApi.forgotPassword })
+}
+
 export function useSignOut() {
   const signOut = useAuthStore((state) => state.signOut)
   return useMutation({

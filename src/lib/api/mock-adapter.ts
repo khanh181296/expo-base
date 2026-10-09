@@ -16,16 +16,27 @@ const LATENCY_MS = 400
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-// Tokens carry the email so the mock survives app reloads without server state.
-const issueTokens = (email: string) => ({
-  accessToken: `mock-access.${Date.now() + ACCESS_TTL_MS}.${encodeURIComponent(email)}`,
-  refreshToken: `mock-refresh.${encodeURIComponent(email)}`,
+// Tokens carry the user so the mock survives app reloads without server state.
+const encodeUser = (email: string, name?: string) =>
+  encodeURIComponent(JSON.stringify({ email, name }))
+
+const issueTokens = (email: string, name?: string) => ({
+  accessToken: `mock-access.${Date.now() + ACCESS_TTL_MS}.${encodeUser(email, name)}`,
+  refreshToken: `mock-refresh.${encodeUser(email, name)}`,
 })
 
-const mockUser = (email: string) => ({
+const decodeUser = (encoded: string): { email: string; name?: string } | null => {
+  try {
+    return JSON.parse(decodeURIComponent(encoded))
+  } catch {
+    return null
+  }
+}
+
+const mockUser = (email: string, name?: string) => ({
   id: 'user_1',
   email,
-  name: email.split('@')[0] ?? 'User',
+  name: name ?? email.split('@')[0] ?? 'User',
 })
 
 function respond<T>(config: InternalAxiosRequestConfig, status: number, data: T): AxiosResponse<T> {
@@ -54,12 +65,12 @@ const parseBody = (config: InternalAxiosRequestConfig) =>
     unknown
   >
 
-/** Email of a valid access token, or null when missing or expired */
+/** User of a valid access token, or null when missing or expired */
 function readAccessToken(config: InternalAxiosRequestConfig) {
   const header = String(config.headers.Authorization ?? '')
-  const [, expiresAt, email] = header.replace('Bearer ', '').split('.')
-  if (!email || !(Number(expiresAt) > Date.now())) return null
-  return decodeURIComponent(email)
+  const [, expiresAt, user] = header.replace('Bearer ', '').split('.')
+  if (!user || !(Number(expiresAt) > Date.now())) return null
+  return decodeUser(user)
 }
 
 export const mockAdapter: AxiosAdapter = async (config) => {
@@ -75,23 +86,36 @@ export const mockAdapter: AxiosAdapter = async (config) => {
       }
       return respond(config, 200, { user: mockUser(email), tokens: issueTokens(email) })
     }
+    case 'POST /auth/register': {
+      const { name, email, password } = parseBody(config)
+      if (typeof email !== 'string' || typeof password !== 'string' || password.length < 8) {
+        return respond(config, 422, { message: 'Invalid registration data' })
+      }
+      if (email === 'taken@example.com') {
+        return respond(config, 409, { message: 'Email is already registered', code: 'EMAIL_TAKEN' })
+      }
+      return respond(config, 201, {
+        user: mockUser(email, typeof name === 'string' ? name : undefined),
+        tokens: issueTokens(email, typeof name === 'string' ? name : undefined),
+      })
+    }
+    case 'POST /auth/forgot-password':
+      return respond(config, 204, null)
     case 'POST /auth/refresh': {
       const { refreshToken } = parseBody(config)
       if (typeof refreshToken !== 'string' || !refreshToken.startsWith('mock-refresh.')) {
         return respond(config, 401, { message: 'Invalid refresh token' })
       }
-      return respond(
-        config,
-        200,
-        issueTokens(decodeURIComponent(refreshToken.slice('mock-refresh.'.length))),
-      )
+      const user = decodeUser(refreshToken.slice('mock-refresh.'.length))
+      if (!user) return respond(config, 401, { message: 'Invalid refresh token' })
+      return respond(config, 200, issueTokens(user.email, user.name))
     }
     case 'POST /auth/logout':
       return respond(config, 204, null)
     case 'GET /auth/me': {
-      const email = readAccessToken(config)
-      if (!email) return respond(config, 401, { message: 'Token expired' })
-      return respond(config, 200, mockUser(email))
+      const user = readAccessToken(config)
+      if (!user) return respond(config, 401, { message: 'Token expired' })
+      return respond(config, 200, mockUser(user.email, user.name))
     }
     default:
       return respond(config, 404, { message: `Mock route not found: ${route}` })

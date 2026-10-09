@@ -18,3 +18,9 @@ export type SignInResponse = {
   user: User
   tokens: AuthTokens
 }
+
+export type SignUpPayload = {
+  name: string
+  email: string
+  password: string
+}

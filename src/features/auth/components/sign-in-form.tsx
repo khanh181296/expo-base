@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { View } from 'react-native'
 
 import { toast } from '@/components/feedback'
-import { Button, FormInput } from '@/components/ui'
+import { Button, FormInput, TextLink } from '@/components/ui'
 import { getErrorMessage } from '@/lib/api'
 
 import { useSignIn } from '../hooks'
@@ -51,6 +51,9 @@ export function SignInForm() {
         returnKeyType="done"
         onSubmitEditing={onSubmit}
       />
+      <TextLink href="/forgot-password" className="self-end">
+        {t('auth.forgotPasswordLink')}
+      </TextLink>
       <Button
         className="mt-2"
         label={t('auth.signIn')}

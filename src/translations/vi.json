@@ -21,7 +21,26 @@
     "signIn": "Đăng nhập",
     "signOut": "Đăng xuất",
     "signOutConfirm": "Bạn có muốn đăng xuất không?",
-    "mockHint": "Đang bật mock API: nhập email bất kỳ và mật khẩu từ 8 ký tự."
+    "mockHint": "Đang bật mock API: nhập email bất kỳ và mật khẩu từ 8 ký tự.",
+    "forgotPasswordLink": "Quên mật khẩu?",
+    "noAccount": "Chưa có tài khoản?",
+    "signUpLink": "Đăng ký",
+    "haveAccount": "Đã có tài khoản?",
+    "signInLink": "Đăng nhập",
+    "signUpTitle": "Tạo tài khoản",
+    "signUpSubtitle": "Bắt đầu chưa tới một phút",
+    "name": "Họ tên",
+    "namePlaceholder": "Nhập họ tên",
+    "confirmPassword": "Nhập lại mật khẩu",
+    "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+    "signUp": "Tạo tài khoản",
+    "forgotTitle": "Quên mật khẩu",
+    "forgotSubtitle": "Nhập email, chúng tôi sẽ gửi link để bạn đặt lại mật khẩu.",
+    "sendResetLink": "Gửi link đặt lại",
+    "resetSentTitle": "Kiểm tra email",
+    "resetSentMessage": "Nếu {{email}} đã có tài khoản, link đặt lại mật khẩu đang được gửi tới.",
+    "backToSignIn": "Quay lại đăng nhập",
+    "mockSignUpHint": "Mock API: taken@example.com giả lập email đã được đăng ký."
   },
   "home": {
     "greeting": "Xin chào, {{name}}",
@@ -43,7 +62,9 @@
   "validation": {
     "required": "Không được để trống",
     "email": "Email không hợp lệ",
-    "passwordMin": "Mật khẩu tối thiểu 8 ký tự"
+    "passwordMin": "Mật khẩu tối thiểu 8 ký tự",
+    "nameMin": "Họ tên tối thiểu 2 ký tự",
+    "passwordMismatch": "Mật khẩu nhập lại không khớp"
   },
   "errors": {
     "network": "Không có kết nối mạng. Vui lòng kiểm tra lại.",
