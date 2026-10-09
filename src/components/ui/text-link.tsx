@@ -1,9 +1,22 @@
 import { Link, type LinkProps } from 'expo-router'
+import { Pressable } from 'react-native'
 
-import { cn } from '@/lib/utils'
+import { Text } from './text'
 
-export type TextLinkProps = Omit<LinkProps, 'className'> & { className?: string }
+export type TextLinkProps = Omit<LinkProps, 'className' | 'asChild' | 'children'> & {
+  children: React.ReactNode
+  className?: string
+}
 
-export function TextLink({ className, ...props }: TextLinkProps) {
-  return <Link className={cn('text-sm font-semibold text-primary', className)} {...props} />
+/** Styled link. `asChild` keeps NativeWind styles on native, where Link renders its own Text. */
+export function TextLink({ className, children, ...props }: TextLinkProps) {
+  return (
+    <Link asChild {...props}>
+      <Pressable accessibilityRole="link" hitSlop={8} className={className}>
+        <Text variant="label" tone="primary" className="font-semibold">
+          {children}
+        </Text>
+      </Pressable>
+    </Link>
+  )
 }
