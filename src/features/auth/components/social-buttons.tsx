@@ -12,7 +12,7 @@ import { getSocialAvailability } from '../social/providers'
 import type { SocialProvider } from '../social/types'
 import { GoogleLogo } from './google-logo'
 
-/** "or" divider + provider buttons. Renders nothing when no provider is available. */
+/** Provider buttons (with an "or" divider except on Android). Renders nothing when no provider is available. */
 export function SocialButtons() {
   const { t } = useTranslation()
   const socialSignIn = useSocialSignIn()
@@ -33,13 +33,15 @@ export function SocialButtons() {
 
   return (
     <View className="gap-3">
-      <View className="flex-row items-center gap-3">
-        <Divider className="flex-1" />
-        <Text variant="caption" tone="muted">
-          {t('auth.or')}
-        </Text>
-        <Divider className="flex-1" />
-      </View>
+      {Platform.OS !== 'android' && (
+        <View className="flex-row items-center gap-3">
+          <Divider className="flex-1" />
+          <Text variant="caption" tone="muted">
+            {t('auth.or')}
+          </Text>
+          <Divider className="flex-1" />
+        </View>
+      )}
       {availability.apple && (
         <AppleButton
           label={t('auth.continueWithApple')}
