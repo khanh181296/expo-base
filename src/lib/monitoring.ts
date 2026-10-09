@@ -36,4 +36,6 @@ export function captureError(error: unknown, context?: Record<string, unknown>) 
   Sentry.captureException(error, context && { extra: context })
 }
 
-export const wrapRoot = Sentry.wrap
+/** Wraps the root component for Sentry (touch and navigation spans) only when Sentry is on. */
+export const wrapRoot = <P extends Record<string, unknown>>(Root: React.ComponentType<P>) =>
+  isMonitoringEnabled ? Sentry.wrap(Root) : Root
