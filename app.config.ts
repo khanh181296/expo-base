@@ -43,6 +43,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         dark: { backgroundColor: '#020617', image: './assets/images/splash-icon.png' },
       },
     ],
+    [
+      '@sentry/react-native/expo',
+      { organization: buildTimeEnv.SENTRY_ORG, project: buildTimeEnv.SENTRY_PROJECT },
+    ],
     'expo-secure-store',
     'expo-localization',
   ],

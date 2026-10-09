@@ -32,6 +32,9 @@ Run `pnpm check` before declaring any task done.
 - Every user-facing string goes through i18n (`src/translations/{en,vi}.json`). Zod messages are i18n keys.
 - Env vars: declare in the schema in `env.js`, read with `Env` from `@/lib/env`. Never put secrets in client env.
 - Use the `@/` alias, no deep relative imports. Use the components in `@/components/ui` before adding new ones.
+- Signed-out screens use `AuthScreen` from `@/features/auth` (heading + EN | VI toggle) and are listed in the `!signedIn` `Stack.Protected` group in `src/app/_layout.tsx`.
+- Report unexpected errors with `captureError` from `@/lib/monitoring`; never call Sentry directly. Sentry is off in development builds.
+- When the mock API is on (`USE_MOCK_API`), add new endpoints to `src/lib/api/mock-adapter.ts` with the same contract as the real API.
 
 ## Navigation & Routing
 

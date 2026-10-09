@@ -25,11 +25,14 @@ const clientSchema = z.object({
   API_URL: z.url(),
   API_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
   USE_MOCK_API: booleanString,
+  SENTRY_DSN: z.union([z.url(), z.literal('')]).default(''),
 })
 
 const buildTimeSchema = z.object({
   EAS_PROJECT_ID: z.string().optional(),
   EXPO_ACCOUNT_OWNER: z.string().optional(),
+  SENTRY_ORG: z.string().optional(),
+  SENTRY_PROJECT: z.string().optional(),
 })
 
 /**
@@ -54,11 +57,14 @@ const clientEnv = parse(clientSchema, {
   API_URL: process.env.API_URL,
   API_TIMEOUT_MS: process.env.API_TIMEOUT_MS,
   USE_MOCK_API: process.env.USE_MOCK_API,
+  SENTRY_DSN: process.env.SENTRY_DSN,
 })
 
 const buildTimeEnv = parse(buildTimeSchema, {
   EAS_PROJECT_ID: process.env.EAS_PROJECT_ID || undefined,
   EXPO_ACCOUNT_OWNER: process.env.EXPO_ACCOUNT_OWNER || undefined,
+  SENTRY_ORG: process.env.SENTRY_ORG || undefined,
+  SENTRY_PROJECT: process.env.SENTRY_PROJECT || undefined,
 })
 
 /** Static app identity. Non-production builds get a suffix so all variants install side by side. */

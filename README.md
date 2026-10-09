@@ -2,19 +2,22 @@
 
 Base React Native dùng Expo, tổ chức theo feature, sẵn sàng làm production.
 
-|            |                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------- |
-| Runtime    | Expo SDK 57 · React Native 0.86 (New Architecture) · React 19.2 · React Compiler                |
-| Điều hướng | Expo Router (typed routes, `Stack.Protected` cho auth)                                          |
-| Style      | NativeWind 4 + Tailwind 3, token màu light/dark qua CSS variables                               |
-| State      | Zustand 5 (client state) · TanStack Query 5 (server state)                                      |
-| API        | Axios: interceptor gắn token, refresh token single-flight, lỗi chuẩn hoá `ApiError`             |
-| Form       | react-hook-form + zod 4                                                                         |
-| Storage    | `expo-secure-store` cho token · MMKV 4 cho cache và cài đặt                                     |
-| i18n       | i18next, có type an toàn, tự nhận ngôn ngữ máy (en, vi)                                         |
-| Tooling    | pnpm 10 · TypeScript strict · ESLint 9 flat + Prettier · Jest + RNTL · husky + commitlint · EAS |
+|              |                                                                                                 |
+| ------------ | ----------------------------------------------------------------------------------------------- |
+| Runtime      | Expo SDK 57 · React Native 0.86 (New Architecture) · React 19.2 · React Compiler                |
+| Điều hướng   | Expo Router (typed routes, `Stack.Protected` cho auth)                                          |
+| Style        | NativeWind 4 + Tailwind 3, token màu light/dark qua CSS variables                               |
+| State        | Zustand 5 (client state) · TanStack Query 5 (server state)                                      |
+| API          | Axios: interceptor gắn token, refresh token single-flight, lỗi chuẩn hoá `ApiError`             |
+| Form         | react-hook-form + zod 4                                                                         |
+| Storage      | `expo-secure-store` cho token · MMKV 4 cho cache và cài đặt                                     |
+| i18n         | i18next, có type an toàn, tự nhận ngôn ngữ máy (en, vi)                                         |
+| Theo dõi lỗi | Sentry (chỉ bật ở staging/production khi có DSN)                                                |
+| Tooling      | pnpm 10 · TypeScript strict · ESLint 9 flat + Prettier · Jest + RNTL · husky + commitlint · EAS |
 
 ## Bắt đầu
+
+Yêu cầu: Node 22, pnpm 10, **Xcode 26.4+** (iOS), Android Studio với SDK 36 (Android).
 
 ```bash
 corepack enable pnpm
@@ -25,9 +28,25 @@ pnpm ios        # hoặc: pnpm android
 Cần development build (không chạy trên Expo Go vì có native module như MMKV).
 Khi đã cài app lên máy, chỉ cần `pnpm start`.
 
+Xem nhanh giao diện không cần build native: `pnpm start` rồi bấm `w` để mở bản web.
+
 Mặc định `.env.development` bật `USE_MOCK_API=true`, nên app chạy được ngay không cần backend.
 Đăng nhập bằng email bất kỳ và mật khẩu từ 8 ký tự trở lên.
 Access token mock hết hạn sau 60 giây, dùng để thử luồng refresh token.
+Đăng ký bằng `taken@example.com` để thử lỗi email đã tồn tại.
+
+## Màn hình có sẵn
+
+| Route                      | Mô tả                                                     |
+| -------------------------- | --------------------------------------------------------- |
+| `/sign-in`                 | Đăng nhập, link tới đăng ký và quên mật khẩu              |
+| `/sign-up`                 | Đăng ký, kiểm tra mật khẩu nhập lại                       |
+| `/forgot-password`         | Gửi link đặt lại mật khẩu, màn "Kiểm tra email"           |
+| `/` (tab Home)             | Lời chào theo tên người dùng                              |
+| `/settings` (tab Settings) | Giao diện sáng/tối/hệ thống, ngôn ngữ, đăng xuất, version |
+
+Các màn chưa đăng nhập có nút đổi ngôn ngữ **EN \| VI** ở góc trên (`AuthScreen`).
+Chưa đăng nhập thì không vào được các tab; đã đăng nhập thì không quay lại màn auth (`Stack.Protected`).
 
 ## Môi trường
 
@@ -52,7 +71,7 @@ src/
   app/                 Route của Expo Router, chỉ để ghép màn hình
     _layout.tsx        Khởi tạo, providers, auth guard
     (app)/             Các tab, chỉ vào được khi đã đăng nhập
-    sign-in.tsx
+    sign-in.tsx, sign-up.tsx, forgot-password.tsx
   features/<name>/     Code theo nghiệp vụ: api, hooks, store, schemas, components
     index.ts           Public API: bên ngoài chỉ import từ đây
   components/
@@ -63,6 +82,7 @@ src/
     storage/           kv (MMKV), secureStorage, keys
     theme/             palette, dark mode, navigation theme
     i18n/
+    monitoring.ts      Sentry: init, user, captureError
   providers/
   translations/        en.json, vi.json
 ```
@@ -77,6 +97,7 @@ src/
 - **Token chỉ nằm trong SecureStore.** MMKV không mã hoá, chỉ dùng cho dữ liệu không nhạy cảm.
 - **Màu:** sửa đồng thời `src/global.css` và `src/lib/theme/palette.ts`. Test sẽ báo lỗi nếu 2 file lệch nhau.
 - Import qua alias `@/…`. Lỗi validate trong schema zod là i18n key.
+- **Web:** file `*.web.ts` thay thế bản native khi chạy web (ví dụ `secure.web.ts`).
 
 ### Thêm feature mới
 
@@ -100,6 +121,14 @@ if (await dialog.confirm({ title: 'Xoá?', destructive: true })) remove()
 await loading.wrap(upload())
 ```
 
+## Theo dõi lỗi (Sentry)
+
+- Bật khi `SENTRY_DSN` có giá trị **và** không phải bản development (dev không bao giờ gửi lỗi).
+- Tự ghi crash, lỗi màn hình (ErrorBoundary), hiệu năng điều hướng, gắn `environment` và `release` theo version.
+- Chỉ gửi `user.id`, không gửi email (`sendDefaultPii: false`).
+- Gửi lỗi tay: `captureError(error, { context })` từ `@/lib/monitoring`.
+- Source map được upload khi build EAS nếu có `SENTRY_AUTH_TOKEN` (đặt bằng `eas env:create`, không ghi vào file `.env`).
+
 ## Scripts
 
 | Lệnh                                                    | Mô tả                                                        |
@@ -119,4 +148,4 @@ Commit theo Conventional Commits (`feat: …`, `fix: …`), được commitlint 
 - [ ] Đổi icon và splash trong `assets/`
 - [ ] Sửa `features/auth/api.ts` cho khớp API thật, rồi tắt `USE_MOCK_API`
 - [ ] Đổi token màu trong `global.css` và `palette.ts`
-- [ ] Cài Sentry (`npx expo install @sentry/react-native`) cho staging và production
+- [ ] Điền `SENTRY_DSN` cho staging và production, `SENTRY_ORG` và `SENTRY_PROJECT`, rồi tạo EAS secret `SENTRY_AUTH_TOKEN` để upload source map

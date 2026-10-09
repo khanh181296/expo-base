@@ -8,6 +8,7 @@ jest.mock('expo-constants', () => ({
           API_URL: 'https://api.test',
           API_TIMEOUT_MS: 1000,
           USE_MOCK_API: false,
+          SENTRY_DSN: '',
         },
       },
     },
