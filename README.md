@@ -152,6 +152,22 @@ await loading.wrap(upload())
 - Gửi lỗi tay: `captureError(error, { context })` từ `@/lib/monitoring`.
 - Source map được upload khi build EAS nếu có `SENTRY_AUTH_TOKEN` (đặt bằng `eas env:create`, không ghi vào file `.env`).
 
+## Firebase (tuỳ chọn)
+
+Base cài sẵn `@react-native-firebase/app` và `analytics`, **chỉ bật khi có file cấu hình**; không có thì build như bình thường.
+
+1. Tạo app iOS và Android trong [Firebase console](https://console.firebase.google.com/) với đúng bundle ID của từng môi trường (`.dev`, `.staging`).
+2. Tải `google-services.json` và `GoogleService-Info.plist`, đặt vào `firebase/<env>/` (đã git-ignore).
+3. Khai báo đường dẫn trong `.env.<env>`:
+   ```
+   GOOGLE_SERVICES_JSON=./firebase/staging/google-services.json
+   GOOGLE_SERVICE_INFO_PLIST=./firebase/staging/GoogleService-Info.plist
+   ```
+   Trên EAS dùng **file environment variable** cùng tên (`eas env:create --type file`).
+4. Có đủ 2 file thì `FIREBASE_ENABLED=true`, config plugin được bật, iOS dùng `useFrameworks: dynamic` (yêu cầu của RN Firebase), và `analytics.track` gửi sang Firebase Analytics (trừ bản development).
+
+Android push qua FCM cũng cần `google-services.json`. Crashlytics không cài vì đã dùng Sentry.
+
 ## Scripts
 
 | Lệnh                                                    | Mô tả                                                        |
@@ -179,4 +195,5 @@ Commit theo Conventional Commits (`feat: …`, `fix: …`), được commitlint 
 - [ ] Đổi icon và splash trong `assets/`
 - [ ] Sửa `features/auth/api.ts` cho khớp API thật, rồi tắt `USE_MOCK_API`
 - [ ] Đổi token màu trong `global.css` và `palette.ts`
+- [ ] (Tuỳ chọn) Thêm file Firebase cho từng môi trường, xem mục Firebase
 - [ ] Điền `SENTRY_DSN` cho staging và production, `SENTRY_ORG` và `SENTRY_PROJECT`, rồi tạo EAS secret `SENTRY_AUTH_TOKEN` để upload source map

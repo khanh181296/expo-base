@@ -44,3 +44,8 @@ example
 
 # testing
 coverage/
+
+# Firebase config files (provide per environment, see .env.example)
+/firebase/
+google-services.json
+GoogleService-Info.plist

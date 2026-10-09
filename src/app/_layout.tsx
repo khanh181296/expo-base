@@ -11,6 +11,7 @@ import { AppGate } from '@/features/app-config'
 import { registerAuthSession, useAuthStore } from '@/features/auth'
 import { analytics } from '@/lib/analytics'
 import { setupQueryManagers } from '@/lib/api'
+import { initFirebase } from '@/lib/firebase'
 import {
   initMonitoring,
   navigationIntegration,
@@ -24,6 +25,7 @@ import { AppProviders } from '@/providers/app-providers'
 export const ErrorBoundary = ErrorFallback
 
 initMonitoring()
+initFirebase()
 void SplashScreen.preventAutoHideAsync()
 loadColorSchemePreference()
 setupQueryManagers()

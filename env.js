@@ -26,6 +26,7 @@ const clientSchema = z.object({
   API_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
   USE_MOCK_API: booleanString,
   SENTRY_DSN: z.union([z.url(), z.literal('')]).default(''),
+  FIREBASE_ENABLED: z.boolean(),
 })
 
 const buildTimeSchema = z.object({
@@ -33,6 +34,8 @@ const buildTimeSchema = z.object({
   EXPO_ACCOUNT_OWNER: z.string().optional(),
   SENTRY_ORG: z.string().optional(),
   SENTRY_PROJECT: z.string().optional(),
+  GOOGLE_SERVICES_JSON: z.string().optional(),
+  GOOGLE_SERVICE_INFO_PLIST: z.string().optional(),
 })
 
 /**
@@ -58,6 +61,10 @@ const clientEnv = parse(clientSchema, {
   API_TIMEOUT_MS: process.env.API_TIMEOUT_MS,
   USE_MOCK_API: process.env.USE_MOCK_API,
   SENTRY_DSN: process.env.SENTRY_DSN,
+  // Firebase is on when both platform files are configured.
+  FIREBASE_ENABLED: Boolean(
+    process.env.GOOGLE_SERVICES_JSON && process.env.GOOGLE_SERVICE_INFO_PLIST,
+  ),
 })
 
 const buildTimeEnv = parse(buildTimeSchema, {
@@ -65,6 +72,9 @@ const buildTimeEnv = parse(buildTimeSchema, {
   EXPO_ACCOUNT_OWNER: process.env.EXPO_ACCOUNT_OWNER || undefined,
   SENTRY_ORG: process.env.SENTRY_ORG || undefined,
   SENTRY_PROJECT: process.env.SENTRY_PROJECT || undefined,
+  // Paths to the Firebase files. On EAS use file environment variables with these names.
+  GOOGLE_SERVICES_JSON: process.env.GOOGLE_SERVICES_JSON || undefined,
+  GOOGLE_SERVICE_INFO_PLIST: process.env.GOOGLE_SERVICE_INFO_PLIST || undefined,
 })
 
 /** Static app identity. Non-production builds get a suffix so all variants install side by side. */

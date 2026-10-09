@@ -2,30 +2,31 @@
 
 ## Đã có
 
-- Expo SDK 57, RN 0.86, React 19.2, pnpm, TypeScript strict
+- Expo SDK 57, RN 0.86, React 19.2, pnpm, TypeScript strict, React Compiler
 - Auth: đăng nhập, đăng ký, quên mật khẩu, refresh token, SecureStore, `Stack.Protected`
 - API: axios + `ApiError`, React Query, mock API cho dev (`USE_MOCK_API`)
-- Feature mẫu Notes: danh sách cuộn vô hạn, kéo tải lại, tạo/sửa/xoá
-- UI: Button, Text, Input, FormInput, Select, Switch, Checkbox, Sheet, Skeleton, EmptyState, ErrorState
-- Toast, dialog, loading, banner mất mạng
-- Theme sáng/tối, i18n vi/en (nút EN | VI ở màn đăng nhập)
-- Sentry, OTA (EAS Update), bắt buộc cập nhật/bảo trì, push notification
-- 3 môi trường dev/staging/prod, `pnpm rename`, CI, 35 test
+- Feature mẫu Ghi chú: cuộn vô hạn, kéo tải lại, tạo/sửa, xoá optimistic
+- UI: Button, Text, Input, FormInput, Select, Switch, Checkbox, DatePicker, OtpInput, Sheet, Skeleton, EmptyState, ErrorState
+- Toast, dialog, loading, banner mất mạng; theme sáng/tối; i18n vi/en
+- Sentry, Firebase Analytics (tuỳ chọn), analytics `track()` có type
+- OTA (EAS Update), bắt buộc cập nhật/bảo trì, push notification
+- 3 môi trường dev/staging/prod, `pnpm rename`
+- 43 test + ngưỡng coverage, Maestro E2E, CI, Renovate, CONTRIBUTING, PR template, ADR
 
 ## Cần làm khi dùng thật
 
 - [ ] `pnpm rename --name "Tên App" --bundle-id com.cty.app`
 - [ ] `eas init` → điền `EAS_PROJECT_ID` (cần cho OTA và push)
-- [ ] Điền `SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`; EAS secret `SENTRY_AUTH_TOKEN`
+- [ ] Sentry: `SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`; EAS secret `SENTRY_AUTH_TOKEN`
+- [ ] Firebase (tuỳ chọn): file `google-services.json` / `GoogleService-Info.plist` cho từng môi trường
 - [ ] Nối API thật, tắt `USE_MOCK_API`; backend cần `/app/config` và `/devices`
-- [ ] Đổi icon, splash, màu
-- [ ] Nâng Xcode 26.4+ và chạy thử native iOS/Android (chưa từng chạy native)
+- [ ] Đổi icon, splash, màu; đổi `appId` trong `.maestro/`; bật Renovate
+- [ ] Nâng Xcode 26.4+ và chạy thử native iOS/Android (**chưa từng chạy native**)
 
-## Chưa có (làm tiếp)
+## Chưa có
 
-- Sinh API client từ OpenAPI (orval), MSW
-- E2E Maestro, Renovate, CONTRIBUTING và PR template
-- Font riêng, DatePicker, OTP input
+- Sinh API client từ OpenAPI (cần file OpenAPI/Swagger của backend)
+- Font riêng (cần chọn font)
 
 ## Link
 
@@ -35,9 +36,14 @@
 | Sentry: tạo tài khoản        | https://sentry.io/signup/                          |
 | Sentry cho Expo              | https://docs.expo.dev/guides/using-sentry/         |
 | Sentry React Native          | https://docs.sentry.io/platforms/react-native/     |
+| Firebase console             | https://console.firebase.google.com/               |
+| Firebase cho Expo            | https://docs.expo.dev/guides/using-firebase/       |
+| React Native Firebase        | https://rnfirebase.io/                             |
 | EAS env và secret            | https://docs.expo.dev/eas/environment-variables/   |
 | EAS Update (OTA)             | https://docs.expo.dev/eas-update/introduction/     |
 | Push notification            | https://docs.expo.dev/push-notifications/overview/ |
+| Maestro                      | https://docs.maestro.dev/                          |
+| Renovate (bật cho repo)      | https://github.com/apps/renovate                   |
 | Expo SDK và yêu cầu Xcode    | https://docs.expo.dev/versions/latest/             |
 | Expo Router protected routes | https://docs.expo.dev/router/advanced/protected/   |
 | NativeWind                   | https://www.nativewind.dev/                        |

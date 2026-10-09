@@ -2,6 +2,15 @@ import type { ConfigContext, ExpoConfig } from 'expo/config'
 
 import { appIdentity, buildTimeEnv, clientEnv } from './env'
 
+const firebasePlugins: NonNullable<ExpoConfig['plugins']> = clientEnv.FIREBASE_ENABLED
+  ? [
+      '@react-native-firebase/app',
+      ['@react-native-firebase/analytics', { ios: { withoutAdIdSupport: true } }],
+      // React Native Firebase resolves the Apple SDK with SPM, which needs dynamic frameworks.
+      ['expo-build-properties', { ios: { useFrameworks: 'dynamic' } }],
+    ]
+  : []
+
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: appIdentity.name,
@@ -19,12 +28,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   userInterfaceStyle: 'automatic',
   ios: {
     bundleIdentifier: appIdentity.bundleId,
+    googleServicesFile: buildTimeEnv.GOOGLE_SERVICE_INFO_PLIST,
     icon: './assets/expo.icon',
     supportsTablet: false,
     config: { usesNonExemptEncryption: false },
   },
   android: {
     package: appIdentity.bundleId,
+    googleServicesFile: buildTimeEnv.GOOGLE_SERVICES_JSON,
     adaptiveIcon: {
       backgroundColor: '#E6F4FE',
       foregroundImage: './assets/images/android-icon-foreground.png',
@@ -54,6 +65,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ],
     'expo-secure-store',
     ['expo-notifications', { color: '#2563EB' }],
+    ...firebasePlugins,
     'expo-localization',
   ],
   experiments: {
