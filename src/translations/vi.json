@@ -44,7 +44,10 @@
     "resetSentTitle": "Kiểm tra email",
     "resetSentMessage": "Nếu {{email}} đã có tài khoản, link đặt lại mật khẩu đang được gửi tới.",
     "backToSignIn": "Quay lại đăng nhập",
-    "mockSignUpHint": "Mock API: taken@example.com giả lập email đã được đăng ký."
+    "mockSignUpHint": "Mock API: taken@example.com giả lập email đã được đăng ký.",
+    "continueWithGoogle": "Tiếp tục với Google",
+    "continueWithApple": "Tiếp tục với Apple",
+    "or": "hoặc"
   },
   "home": {
     "greeting": "Xin chào, {{name}}",

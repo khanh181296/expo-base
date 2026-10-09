@@ -44,7 +44,10 @@
     "resetSentTitle": "Check your email",
     "resetSentMessage": "If an account exists for {{email}}, a password reset link is on its way.",
     "backToSignIn": "Back to sign in",
-    "mockSignUpHint": "Mock API: taken@example.com simulates an email that is already registered."
+    "mockSignUpHint": "Mock API: taken@example.com simulates an email that is already registered.",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "or": "or"
   },
   "home": {
     "greeting": "Hello, {{name}}",

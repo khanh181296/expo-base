@@ -175,6 +175,15 @@ export const mockAdapter: AxiosAdapter = async (config) => {
       return respond(config, 204, null)
     case 'POST /auth/forgot-password':
       return respond(config, 204, null)
+    case 'POST /auth/sso': {
+      const { idToken, provider } = parseBody(config)
+      if (typeof idToken !== 'string' || !idToken) {
+        return respond(config, 401, { message: 'Invalid ID token' })
+      }
+      const email = `${String(provider)}.user@example.com`
+      const name = provider === 'apple' ? 'Apple User' : 'Google User'
+      return respond(config, 200, { user: mockUser(email, name), tokens: issueTokens(email, name) })
+    }
     case 'POST /auth/refresh': {
       const { refreshToken } = parseBody(config)
       if (typeof refreshToken !== 'string' || !refreshToken.startsWith('mock-refresh.')) {

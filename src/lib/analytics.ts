@@ -5,7 +5,7 @@
 import { isDev } from '@/lib/env'
 
 export type AnalyticsEvent =
-  | { name: 'sign_in'; method: 'email' }
+  | { name: 'sign_in'; method: 'email' | 'google' | 'apple' }
   | { name: 'sign_up'; method: 'email' }
   | { name: 'sign_out' }
   | { name: 'note_created' }

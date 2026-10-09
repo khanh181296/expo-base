@@ -6,10 +6,28 @@ const firebasePlugins: NonNullable<ExpoConfig['plugins']> = clientEnv.FIREBASE_E
   ? [
       '@react-native-firebase/app',
       ['@react-native-firebase/analytics', { ios: { withoutAdIdSupport: true } }],
+      '@react-native-firebase/auth',
       // React Native Firebase resolves the Apple SDK with SPM, which needs dynamic frameworks.
       ['expo-build-properties', { ios: { useFrameworks: 'dynamic' } }],
     ]
   : []
+
+// Google Sign-In on iOS needs the reversed iOS client ID as a URL scheme.
+const googleIosUrlScheme = clientEnv.GOOGLE_IOS_CLIENT_ID
+  ? `com.googleusercontent.apps.${clientEnv.GOOGLE_IOS_CLIENT_ID.replace('.apps.googleusercontent.com', '')}`
+  : undefined
+
+const socialPlugins: NonNullable<ExpoConfig['plugins']> = [
+  ...(googleIosUrlScheme
+    ? [
+        ['@react-native-google-signin/google-signin', { iosUrlScheme: googleIosUrlScheme }] as [
+          string,
+          unknown,
+        ],
+      ]
+    : []),
+  ...(clientEnv.APPLE_SIGN_IN ? ['expo-apple-authentication'] : []),
+]
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -31,6 +49,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     googleServicesFile: buildTimeEnv.GOOGLE_SERVICE_INFO_PLIST,
     icon: './assets/expo.icon',
     supportsTablet: false,
+    usesAppleSignIn: clientEnv.APPLE_SIGN_IN,
     config: { usesNonExemptEncryption: false },
   },
   android: {
@@ -66,6 +85,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-secure-store',
     ['expo-notifications', { color: '#2563EB' }],
     ...firebasePlugins,
+    ...socialPlugins,
     'expo-localization',
   ],
   experiments: {

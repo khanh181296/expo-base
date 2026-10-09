@@ -27,6 +27,10 @@ const clientSchema = z.object({
   USE_MOCK_API: booleanString,
   SENTRY_DSN: z.union([z.url(), z.literal('')]).default(''),
   FIREBASE_ENABLED: z.boolean(),
+  /** OAuth client IDs from Google Cloud / Firebase (Web client is required for idToken) */
+  GOOGLE_WEB_CLIENT_ID: z.string().default(''),
+  GOOGLE_IOS_CLIENT_ID: z.string().default(''),
+  APPLE_SIGN_IN: booleanString,
 })
 
 const buildTimeSchema = z.object({
@@ -65,6 +69,9 @@ const clientEnv = parse(clientSchema, {
   FIREBASE_ENABLED: Boolean(
     process.env.GOOGLE_SERVICES_JSON && process.env.GOOGLE_SERVICE_INFO_PLIST,
   ),
+  GOOGLE_WEB_CLIENT_ID: process.env.GOOGLE_WEB_CLIENT_ID,
+  GOOGLE_IOS_CLIENT_ID: process.env.GOOGLE_IOS_CLIENT_ID,
+  APPLE_SIGN_IN: process.env.APPLE_SIGN_IN,
 })
 
 const buildTimeEnv = parse(buildTimeSchema, {

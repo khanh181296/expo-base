@@ -3,7 +3,7 @@
 ## Đã có
 
 - Expo SDK 57, RN 0.86, React 19.2, pnpm, TypeScript strict, React Compiler
-- Auth: đăng nhập, đăng ký, quên mật khẩu, refresh token, SecureStore, `Stack.Protected`
+- Auth: đăng nhập email, **Google, Apple** (qua Firebase như invo), đăng ký, quên mật khẩu, refresh token, SecureStore, `Stack.Protected`
 - API: axios + `ApiError`, React Query, mock API cho dev (`USE_MOCK_API`)
 - Feature mẫu Ghi chú: cuộn vô hạn, kéo tải lại, tạo/sửa, xoá optimistic
 - UI: Button, Text, Input, FormInput, Select, Switch, Checkbox, DatePicker, OtpInput, Sheet, Skeleton, EmptyState, ErrorState
@@ -18,6 +18,7 @@
 - [ ] `pnpm rename --name "Tên App" --bundle-id com.cty.app`
 - [ ] `eas init` → điền `EAS_PROJECT_ID` (cần cho OTA và push)
 - [ ] Sentry: `SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`; EAS secret `SENTRY_AUTH_TOKEN`
+- [ ] Đăng nhập Google/Apple: Client ID Google, bật Sign in with Apple, SHA-1 Android (xem README)
 - [ ] Firebase (tuỳ chọn): file `google-services.json` / `GoogleService-Info.plist` cho từng môi trường
 - [ ] Nối API thật, tắt `USE_MOCK_API`; backend cần `/app/config` và `/devices`
 - [ ] Đổi icon, splash, màu; đổi `appId` trong `.maestro/`; bật Renovate

@@ -12,5 +12,6 @@ module.exports = {
     : {
         '@react-native-firebase/app': disabled,
         '@react-native-firebase/analytics': disabled,
+        '@react-native-firebase/auth': disabled,
       },
 }

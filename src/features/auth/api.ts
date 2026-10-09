@@ -1,5 +1,6 @@
 import { api } from '@/lib/api'
 
+import type { SocialProvider } from './social/types'
 import type { AuthTokens, SignInPayload, SignInResponse, SignUpPayload, User } from './types'
 
 export const authApi = {
@@ -11,6 +12,10 @@ export const authApi = {
 
   forgotPassword: (email: string) =>
     api.post<void>('/auth/forgot-password', { email }, { skipAuth: true }).then(() => undefined),
+
+  /** Exchange a Firebase ID token from Google/Apple sign-in for app tokens */
+  sso: (payload: { idToken: string; provider: SocialProvider }) =>
+    api.post<SignInResponse>('/auth/sso', payload, { skipAuth: true }).then((res) => res.data),
 
   refresh: (refreshToken: string) =>
     api

@@ -169,6 +169,19 @@ Base cài sẵn `@react-native-firebase/app` và `analytics`, **chỉ bật khi 
 
 Android push qua FCM cũng cần `google-services.json`. Crashlytics không cài vì đã dùng Sentry.
 
+## Đăng nhập Google / Apple
+
+Cùng luồng với app invo: **Google/Apple native → Firebase Auth → Firebase ID token → `POST /auth/sso { idToken, provider }`**, backend xác thực token và trả `{ user, tokens }` như đăng nhập email.
+
+- Khi `USE_MOCK_API=true` và chưa cấu hình, nút vẫn hiện và đăng nhập giả lập (để làm UI).
+- Cấu hình thật (cần Firebase ở mục trên):
+  1. Firebase console → Authentication → bật **Google** và **Apple**.
+  2. `GOOGLE_WEB_CLIENT_ID` (OAuth client loại Web) và `GOOGLE_IOS_CLIENT_ID` (loại iOS) trong `.env.<env>`. URL scheme iOS được tự tạo từ iOS client ID.
+  3. Apple: bật _Sign in with Apple_ cho bundle ID trên Apple Developer, rồi `APPLE_SIGN_IN=true`.
+  4. Android: thêm SHA-1 của keystore (xem `eas credentials`) vào app Android trong Firebase, tải lại `google-services.json`.
+- Nút Apple chỉ hiện trên iOS (yêu cầu của App Store khi app có đăng nhập Google).
+- Thêm provider khác (Facebook...): thêm vào `src/features/auth/social/`.
+
 ## Scripts
 
 | Lệnh                                                    | Mô tả                                                        |
