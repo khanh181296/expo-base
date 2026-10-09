@@ -25,6 +25,8 @@ export function NotesList() {
       <FlashList
         data={query.data.notes}
         keyExtractor={(note) => note.id}
+        // New items should appear at the top; keeping the scroll anchor also breaks removals in 2.0.x.
+        maintainVisibleContentPosition={{ disabled: true }}
         contentContainerStyle={{ padding: 16, paddingBottom: 96 }}
         ItemSeparatorComponent={() => <View className="h-3" />}
         renderItem={({ item }) => (

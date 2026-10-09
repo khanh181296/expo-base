@@ -1,5 +1,3 @@
-import * as Notifications from 'expo-notifications'
-import { type Href, router } from 'expo-router'
 import { useCallback, useEffect, useState } from 'react'
 import { AppState } from 'react-native'
 
@@ -50,16 +48,6 @@ export function usePushPermission() {
   }, [refresh])
 
   return { status, request }
-}
-
-/** Opens `data.url` (an app route like "/notes/123") when a notification is tapped. */
-export function useNotificationNavigation() {
-  const response = Notifications.useLastNotificationResponse()
-
-  useEffect(() => {
-    const url = response?.notification.request.content.data?.url
-    if (typeof url === 'string' && url.startsWith('/')) router.push(url as Href)
-  }, [response])
 }
 
 export async function unregisterPushToken() {

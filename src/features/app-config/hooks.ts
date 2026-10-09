@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import * as Application from 'expo-application'
+import Constants from 'expo-constants'
 
 import { compareVersions } from '@/lib/utils'
 
@@ -17,11 +18,14 @@ export function useAppGate() {
   })
 
   const config = query.data
-  const version = Application.nativeApplicationVersion ?? '0.0.0'
+  // Web has no native version; fall back to the app config version. Unknown never blocks.
+  const version = Application.nativeApplicationVersion ?? Constants.expoConfig?.version
 
   let gate: AppGate = 'ok'
   if (config?.maintenance) gate = 'maintenance'
-  else if (config && compareVersions(version, config.minVersion) < 0) gate = 'updateRequired'
+  else if (config && version && compareVersions(version, config.minVersion) < 0) {
+    gate = 'updateRequired'
+  }
 
   return { gate, config, retry: query.refetch }
 }

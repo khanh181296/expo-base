@@ -1,6 +1,9 @@
 import { Stack } from 'expo-router'
 import { useTranslation } from 'react-i18next'
 
+// Deep links to /notes/new or /notes/[id] still get the list underneath, so back works.
+export const unstable_settings = { initialRouteName: 'index' }
+
 export default function NotesLayout() {
   const { t } = useTranslation()
 
