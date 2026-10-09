@@ -5,11 +5,14 @@
     "confirm": "Confirm",
     "retry": "Try again",
     "loading": "Loading…",
-    "back": "Back"
+    "back": "Back",
+    "save": "Save",
+    "delete": "Delete"
   },
   "tabs": {
     "home": "Home",
-    "settings": "Settings"
+    "settings": "Settings",
+    "notes": "Notes"
   },
   "auth": {
     "signInTitle": "Welcome back",
@@ -57,14 +60,16 @@
       "system": "System",
       "light": "Light",
       "dark": "Dark"
-    }
+    },
+    "notifications": "Notifications"
   },
   "validation": {
     "required": "This field is required",
     "email": "Invalid email address",
     "passwordMin": "Password must be at least 8 characters",
     "nameMin": "Name must be at least 2 characters",
-    "passwordMismatch": "Passwords do not match"
+    "passwordMismatch": "Passwords do not match",
+    "tooLong": "This is too long"
   },
   "errors": {
     "network": "No internet connection. Please check your network.",
@@ -75,5 +80,38 @@
     "notFound": "This screen does not exist.",
     "goHome": "Go to home screen",
     "boundaryTitle": "Something went wrong"
+  },
+  "states": {
+    "errorTitle": "Could not load data",
+    "offline": "You are offline",
+    "emptyTitle": "Nothing here yet"
+  },
+  "notes": {
+    "title": "Notes",
+    "detailTitle": "Edit note",
+    "create": "New note",
+    "titleLabel": "Title",
+    "titlePlaceholder": "What is it about?",
+    "contentLabel": "Content",
+    "contentPlaceholder": "Write something…",
+    "emptyTitle": "No notes yet",
+    "emptyDescription": "Your notes will show up here.",
+    "created": "Note created",
+    "updated": "Note saved",
+    "deleteTitle": "Delete this note?",
+    "deleteMessage": "This cannot be undone."
+  },
+  "ota": {
+    "title": "Update ready",
+    "message": "A new version has been downloaded. Restart to use it?",
+    "restart": "Restart",
+    "later": "Later"
+  },
+  "appGate": {
+    "updateTitle": "Update required",
+    "updateMessage": "This version is no longer supported. Please update to continue.",
+    "updateAction": "Update now",
+    "maintenanceTitle": "Under maintenance",
+    "maintenanceMessage": "We are improving the service. Please come back shortly."
   }
 }

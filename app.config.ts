@@ -8,6 +8,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: appIdentity.slug,
   owner: buildTimeEnv.EXPO_ACCOUNT_OWNER,
   version: '1.0.0',
+  // OTA updates only reach builds with the same app version.
+  runtimeVersion: { policy: 'appVersion' },
+  ...(buildTimeEnv.EAS_PROJECT_ID && {
+    updates: { url: `https://u.expo.dev/${buildTimeEnv.EAS_PROJECT_ID}` },
+  }),
   orientation: 'portrait',
   icon: './assets/images/icon.png',
   scheme: appIdentity.scheme,
@@ -48,6 +53,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       { organization: buildTimeEnv.SENTRY_ORG, project: buildTimeEnv.SENTRY_PROJECT },
     ],
     'expo-secure-store',
+    ['expo-notifications', { color: '#2563EB' }],
     'expo-localization',
   ],
   experiments: {

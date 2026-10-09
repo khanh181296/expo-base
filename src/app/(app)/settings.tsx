@@ -1,7 +1,13 @@
 import { useTranslation } from 'react-i18next'
 
-import { Card, Screen, Text } from '@/components/ui'
-import { AboutSection, AccountSection, AppearanceSection, LanguageItem } from '@/features/settings'
+import { Card, Divider, Screen, Text } from '@/components/ui'
+import {
+  AboutSection,
+  AccountSection,
+  AppearanceSection,
+  LanguageItem,
+  NotificationsItem,
+} from '@/features/settings'
 
 export default function SettingsScreen() {
   const { t } = useTranslation()
@@ -12,6 +18,8 @@ export default function SettingsScreen() {
       <AppearanceSection />
       <Card>
         <LanguageItem />
+        <Divider className="ml-12" />
+        <NotificationsItem />
       </Card>
       <AccountSection />
       <AboutSection />

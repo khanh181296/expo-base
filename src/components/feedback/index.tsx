@@ -1,5 +1,6 @@
 import { DialogHost } from './dialog'
 import { LoadingOverlay } from './loading-overlay'
+import { OfflineBanner } from './offline-banner'
 import { ToastHost } from './toast'
 
 export { dialog } from './dialog'
@@ -10,6 +11,7 @@ export { toast } from './toast'
 export function FeedbackHosts() {
   return (
     <>
+      <OfflineBanner />
       <LoadingOverlay />
       <ToastHost />
       <DialogHost />

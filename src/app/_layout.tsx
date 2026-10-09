@@ -7,6 +7,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
 
 import { ErrorFallback } from '@/components/error-fallback'
+import { AppGate } from '@/features/app-config'
 import { registerAuthSession, useAuthStore } from '@/features/auth'
 import { setupQueryManagers } from '@/lib/api'
 import {
@@ -15,6 +16,7 @@ import {
   setMonitoringUser,
   wrapRoot,
 } from '@/lib/monitoring'
+import { useOtaUpdates } from '@/lib/ota'
 import { loadColorSchemePreference } from '@/lib/theme'
 import { AppProviders } from '@/providers/app-providers'
 
@@ -40,13 +42,16 @@ function RootLayout() {
 
   return (
     <AppProviders>
-      <RootNavigator />
+      <AppGate>
+        <RootNavigator />
+      </AppGate>
     </AppProviders>
   )
 }
 
 function RootNavigator() {
   const status = useAuthStore((state) => state.status)
+  useOtaUpdates()
 
   useEffect(() => {
     if (status !== 'loading') void SplashScreen.hideAsync()

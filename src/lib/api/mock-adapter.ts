@@ -68,15 +68,78 @@ const parseBody = (config: InternalAxiosRequestConfig) =>
 /** User of a valid access token, or null when missing or expired */
 function readAccessToken(config: InternalAxiosRequestConfig) {
   const header = String(config.headers.Authorization ?? '')
-  const [, expiresAt, user] = header.replace('Bearer ', '').split('.')
-  if (!user || !(Number(expiresAt) > Date.now())) return null
-  return decodeUser(user)
+  // Format: mock-access.<expiresAt>.<user>; the encoded user may itself contain dots.
+  const [, expiresAt, ...user] = header.replace('Bearer ', '').split('.')
+  if (!user.length || !(Number(expiresAt) > Date.now())) return null
+  return decodeUser(user.join('.'))
+}
+
+type MockNote = { id: string; title: string; content: string; updatedAt: string }
+
+const notes: MockNote[] = Array.from({ length: 42 }, (_, index) => ({
+  id: `note_${42 - index}`,
+  title: `Ghi chú #${42 - index}`,
+  content: 'Ghi chú mẫu từ mock API. Kéo xuống để tải lại, cuộn để xem thêm, chạm để sửa.',
+  updatedAt: new Date(Date.now() - index * 3_600_000).toISOString(),
+}))
+
+function handleNotes(config: InternalAxiosRequestConfig, method: string, url: string) {
+  if (!readAccessToken(config)) return respond(config, 401, { message: 'Token expired' })
+
+  if (method === 'GET' && url === '/notes') {
+    const page = Number(config.params?.page ?? 1)
+    const limit = Number(config.params?.limit ?? 15)
+    const start = (page - 1) * limit
+    return respond(config, 200, {
+      items: notes.slice(start, start + limit),
+      page,
+      nextPage: start + limit < notes.length ? page + 1 : null,
+      total: notes.length,
+    })
+  }
+
+  if (method === 'POST' && url === '/notes') {
+    const { title, content } = parseBody(config)
+    const note = {
+      id: `note_${Date.now()}`,
+      title: String(title ?? ''),
+      content: String(content ?? ''),
+      updatedAt: new Date().toISOString(),
+    }
+    notes.unshift(note)
+    return respond(config, 201, note)
+  }
+
+  const index = notes.findIndex((note) => `/notes/${note.id}` === url)
+  if (index === -1) return respond(config, 404, { message: 'Note not found' })
+
+  if (method === 'GET') return respond(config, 200, notes[index])
+  if (method === 'PUT') {
+    const { title, content } = parseBody(config)
+    const updated = {
+      ...notes[index]!,
+      title: String(title ?? ''),
+      content: String(content ?? ''),
+      updatedAt: new Date().toISOString(),
+    }
+    notes.splice(index, 1)
+    notes.unshift(updated)
+    return respond(config, 200, updated)
+  }
+  if (method === 'DELETE') {
+    notes.splice(index, 1)
+    return respond(config, 204, null)
+  }
+  return respond(config, 405, { message: 'Method not allowed' })
 }
 
 export const mockAdapter: AxiosAdapter = async (config) => {
   await wait(LATENCY_MS)
   const method = (config.method ?? 'get').toUpperCase()
   const route = `${method} ${config.url}`
+
+  if (config.url?.startsWith('/notes')) return handleNotes(config, method, config.url)
+  if (method === 'DELETE' && config.url?.startsWith('/devices/')) return respond(config, 204, null)
 
   switch (route) {
     case 'POST /auth/login': {
@@ -99,6 +162,17 @@ export const mockAdapter: AxiosAdapter = async (config) => {
         tokens: issueTokens(email, typeof name === 'string' ? name : undefined),
       })
     }
+    case 'GET /app/config':
+      return respond(config, 200, {
+        minVersion: '1.0.0',
+        maintenance: false,
+        storeUrl: {
+          ios: 'https://apps.apple.com/app/id0000000000',
+          android: 'https://play.google.com/store/apps/details?id=com.example.expobase',
+        },
+      })
+    case 'POST /devices':
+      return respond(config, 204, null)
     case 'POST /auth/forgot-password':
       return respond(config, 204, null)
     case 'POST /auth/refresh': {

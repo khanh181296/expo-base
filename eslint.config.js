@@ -27,8 +27,9 @@ module.exports = defineConfig([
     },
   },
   {
-    files: ['*.config.js', 'env.js', '.lintstagedrc.js'],
+    files: ['*.config.js', 'env.js', '.lintstagedrc.js', 'scripts/**/*.js'],
     languageOptions: { globals: globals.node },
+    rules: { 'no-console': 'off' },
   },
   {
     files: ['**/*.ts', '**/*.tsx'],

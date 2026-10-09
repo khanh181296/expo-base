@@ -21,6 +21,7 @@ export function Input({
   error,
   hint,
   secureTextEntry,
+  multiline,
   editable = true,
   className,
   onFocus,
@@ -37,7 +38,8 @@ export function Input({
       {label && <Text variant="label">{label}</Text>}
       <View
         className={cn(
-          'h-12 flex-row items-center rounded border border-input bg-background px-3',
+          'flex-row rounded border border-input bg-background px-3',
+          multiline ? 'min-h-28 items-start py-2.5' : 'h-12 items-center',
           focused && 'border-ring',
           error && 'border-destructive',
           !editable && 'bg-muted opacity-70',
@@ -49,6 +51,8 @@ export function Input({
           placeholderTextColor={colors['muted-foreground']}
           selectionColor={colors.primary}
           secureTextEntry={hidden}
+          multiline={multiline}
+          textAlignVertical={multiline ? 'top' : 'center'}
           editable={editable}
           accessibilityLabel={label}
           onFocus={(event) => {

@@ -1,0 +1,14 @@
+import { Stack } from 'expo-router'
+import { useTranslation } from 'react-i18next'
+
+export default function NotesLayout() {
+  const { t } = useTranslation()
+
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ title: t('notes.title') }} />
+      <Stack.Screen name="new" options={{ title: t('notes.create'), presentation: 'modal' }} />
+      <Stack.Screen name="[id]" options={{ title: t('notes.detailTitle') }} />
+    </Stack>
+  )
+}

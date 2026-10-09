@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { dialog } from '@/components/feedback'
 import { Card, ListItem, Text } from '@/components/ui'
 import { useSignOut } from '@/features/auth'
+import { unregisterPushToken } from '@/features/notifications'
 
 export function AccountSection() {
   const { t } = useTranslation()
@@ -16,7 +17,9 @@ export function AccountSection() {
       confirmLabel: t('auth.signOut'),
       destructive: true,
     })
-    if (confirmed) signOut.mutate()
+    if (!confirmed) return
+    await unregisterPushToken()
+    signOut.mutate()
   }
 
   return (

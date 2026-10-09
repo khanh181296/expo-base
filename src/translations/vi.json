@@ -5,11 +5,14 @@
     "confirm": "Xác nhận",
     "retry": "Thử lại",
     "loading": "Đang tải…",
-    "back": "Quay lại"
+    "back": "Quay lại",
+    "save": "Lưu",
+    "delete": "Xoá"
   },
   "tabs": {
     "home": "Trang chủ",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "notes": "Ghi chú"
   },
   "auth": {
     "signInTitle": "Chào mừng trở lại",
@@ -57,14 +60,16 @@
       "system": "Theo hệ thống",
       "light": "Sáng",
       "dark": "Tối"
-    }
+    },
+    "notifications": "Thông báo"
   },
   "validation": {
     "required": "Không được để trống",
     "email": "Email không hợp lệ",
     "passwordMin": "Mật khẩu tối thiểu 8 ký tự",
     "nameMin": "Họ tên tối thiểu 2 ký tự",
-    "passwordMismatch": "Mật khẩu nhập lại không khớp"
+    "passwordMismatch": "Mật khẩu nhập lại không khớp",
+    "tooLong": "Nội dung quá dài"
   },
   "errors": {
     "network": "Không có kết nối mạng. Vui lòng kiểm tra lại.",
@@ -75,5 +80,38 @@
     "notFound": "Màn hình này không tồn tại.",
     "goHome": "Về trang chủ",
     "boundaryTitle": "Đã có lỗi xảy ra"
+  },
+  "states": {
+    "errorTitle": "Không tải được dữ liệu",
+    "offline": "Đang mất kết nối mạng",
+    "emptyTitle": "Chưa có dữ liệu"
+  },
+  "notes": {
+    "title": "Ghi chú",
+    "detailTitle": "Sửa ghi chú",
+    "create": "Ghi chú mới",
+    "titleLabel": "Tiêu đề",
+    "titlePlaceholder": "Ghi chú về điều gì?",
+    "contentLabel": "Nội dung",
+    "contentPlaceholder": "Viết gì đó…",
+    "emptyTitle": "Chưa có ghi chú",
+    "emptyDescription": "Ghi chú của bạn sẽ hiện ở đây.",
+    "created": "Đã tạo ghi chú",
+    "updated": "Đã lưu ghi chú",
+    "deleteTitle": "Xoá ghi chú này?",
+    "deleteMessage": "Không thể hoàn tác."
+  },
+  "ota": {
+    "title": "Đã có bản cập nhật",
+    "message": "Phiên bản mới đã tải xong. Khởi động lại để dùng ngay?",
+    "restart": "Khởi động lại",
+    "later": "Để sau"
+  },
+  "appGate": {
+    "updateTitle": "Cần cập nhật ứng dụng",
+    "updateMessage": "Phiên bản này không còn được hỗ trợ. Vui lòng cập nhật để tiếp tục.",
+    "updateAction": "Cập nhật ngay",
+    "maintenanceTitle": "Đang bảo trì",
+    "maintenanceMessage": "Hệ thống đang được nâng cấp. Vui lòng quay lại sau ít phút."
   }
 }
