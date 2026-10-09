@@ -1,56 +1,122 @@
-# Welcome to your Expo app 👋
+# Expo Base
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Base React Native dùng Expo, tổ chức theo feature, sẵn sàng làm production.
 
-## Get started
+|            |                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| Runtime    | Expo SDK 57 · React Native 0.86 (New Architecture) · React 19.2 · React Compiler                |
+| Điều hướng | Expo Router (typed routes, `Stack.Protected` cho auth)                                          |
+| Style      | NativeWind 4 + Tailwind 3, token màu light/dark qua CSS variables                               |
+| State      | Zustand 5 (client state) · TanStack Query 5 (server state)                                      |
+| API        | Axios: interceptor gắn token, refresh token single-flight, lỗi chuẩn hoá `ApiError`             |
+| Form       | react-hook-form + zod 4                                                                         |
+| Storage    | `expo-secure-store` cho token · MMKV 4 cho cache và cài đặt                                     |
+| i18n       | i18next, có type an toàn, tự nhận ngôn ngữ máy (en, vi)                                         |
+| Tooling    | pnpm 10 · TypeScript strict · ESLint 9 flat + Prettier · Jest + RNTL · husky + commitlint · EAS |
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Bắt đầu
 
 ```bash
-npm run reset-project
+corepack enable pnpm
+pnpm install
+pnpm ios        # hoặc: pnpm android
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Cần development build (không chạy trên Expo Go vì có native module như MMKV).
+Khi đã cài app lên máy, chỉ cần `pnpm start`.
 
-### Other setup steps
+Mặc định `.env.development` bật `USE_MOCK_API=true`, nên app chạy được ngay không cần backend.
+Đăng nhập bằng email bất kỳ và mật khẩu từ 8 ký tự trở lên.
+Access token mock hết hạn sau 60 giây, dùng để thử luồng refresh token.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Môi trường
 
-## Learn more
+Chọn môi trường bằng `APP_ENV` (`development` | `staging` | `production`). `env.js` sẽ:
 
-To learn more about developing your project with Expo, look at the following resources:
+1. Đọc `.env.<APP_ENV>` và kiểm tra bằng zod. Biến sai thì build fail ngay.
+2. Đưa phần biến client vào `extra.env`. App đọc qua `import { Env } from '@/lib/env'`.
+3. Thêm hậu tố cho bundle ID, tên app và scheme (`.dev`, `.staging`), nên cài được cả 3 bản trên cùng một máy.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Thêm biến mới: khai báo trong schema ở `env.js`, rồi thêm vào các file `.env.*` và `.env.example`.
+Không đưa secret vào biến client, vì chúng nằm trong bundle JS.
 
-## Join the community
+```bash
+pnpm start:staging
+pnpm build:staging      # eas build --profile staging
+```
 
-Join our community of developers creating universal apps.
+## Cấu trúc
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```
+src/
+  app/                 Route của Expo Router, chỉ để ghép màn hình
+    _layout.tsx        Khởi tạo, providers, auth guard
+    (app)/             Các tab, chỉ vào được khi đã đăng nhập
+    sign-in.tsx
+  features/<name>/     Code theo nghiệp vụ: api, hooks, store, schemas, components
+    index.ts           Public API: bên ngoài chỉ import từ đây
+  components/
+    ui/                Design system: Button, Text, Input, FormInput, Screen, Sheet...
+    feedback/          toast, dialog.confirm, loading overlay (gọi được từ mọi nơi)
+  lib/                 Hạ tầng không phụ thuộc feature
+    api/               client, errors, query-client, mock-adapter
+    storage/           kv (MMKV), secureStorage, keys
+    theme/             palette, dark mode, navigation theme
+    i18n/
+  providers/
+  translations/        en.json, vi.json
+```
+
+### Quy ước
+
+- **Phụ thuộc một chiều:** `app → features → components / lib`. `lib` không import `features`.
+  Ví dụ auth gắn vào API client qua `setAuthHandlers`. ESLint chặn import sâu vào trong feature.
+- **Server state dùng React Query, client state dùng Zustand.** Không copy dữ liệu từ API sang store.
+- **Lỗi API luôn là `ApiError`** (`kind`, `status`, `serverMessage`).
+  Hiển thị cho người dùng bằng `getErrorMessage(error, t)`.
+- **Token chỉ nằm trong SecureStore.** MMKV không mã hoá, chỉ dùng cho dữ liệu không nhạy cảm.
+- **Màu:** sửa đồng thời `src/global.css` và `src/lib/theme/palette.ts`. Test sẽ báo lỗi nếu 2 file lệch nhau.
+- Import qua alias `@/…`. Lỗi validate trong schema zod là i18n key.
+
+### Thêm feature mới
+
+```
+src/features/orders/
+  api.ts          gọi `api` từ '@/lib/api'
+  hooks.ts        useQuery / useMutation + query keys
+  components/
+  index.ts        export những gì bên ngoài được dùng
+```
+
+Sau đó thêm route trong `src/app/`.
+
+### Gọi feedback toàn cục
+
+```ts
+import { dialog, loading, toast } from '@/components/feedback'
+
+toast.success('Đã lưu')
+if (await dialog.confirm({ title: 'Xoá?', destructive: true })) remove()
+await loading.wrap(upload())
+```
+
+## Scripts
+
+| Lệnh                                                    | Mô tả                                                        |
+| ------------------------------------------------------- | ------------------------------------------------------------ |
+| `pnpm check`                                            | typecheck, lint, format và test (giống CI)                   |
+| `pnpm typecheck` / `lint` / `format` / `test`           | Chạy riêng từng bước                                         |
+| `pnpm doctor`                                           | expo-doctor                                                  |
+| `pnpm prebuild`                                         | Sinh lại `ios/` và `android/` (không commit hai thư mục này) |
+| `pnpm build:dev` / `build:staging` / `build:production` | EAS Build                                                    |
+
+Commit theo Conventional Commits (`feat: …`, `fix: …`), được commitlint kiểm tra.
+
+## Trước khi dùng cho dự án thật
+
+- [ ] Đổi `BASE` trong `env.js` (tên app, slug, scheme, bundle ID)
+- [ ] Chạy `eas init` và điền `EAS_PROJECT_ID`, `EXPO_ACCOUNT_OWNER`
+- [ ] Đổi icon và splash trong `assets/`
+- [ ] Sửa `features/auth/api.ts` cho khớp API thật, rồi tắt `USE_MOCK_API`
+- [ ] Đổi token màu trong `global.css` và `palette.ts`
+- [ ] Cài Sentry (`npx expo install @sentry/react-native`) cho staging và production

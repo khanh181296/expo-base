@@ -1,18 +1,52 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import '@/global.css'
+import '@/lib/theme/interop'
+import '@/lib/i18n'
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { Stack } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
+import { useEffect } from 'react'
 
-SplashScreen.preventAutoHideAsync();
+import { ErrorFallback } from '@/components/error-fallback'
+import { registerAuthSession, useAuthStore } from '@/features/auth'
+import { setupQueryManagers } from '@/lib/api'
+import { loadColorSchemePreference } from '@/lib/theme'
+import { AppProviders } from '@/providers/app-providers'
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export const ErrorBoundary = ErrorFallback
+
+void SplashScreen.preventAutoHideAsync()
+loadColorSchemePreference()
+setupQueryManagers()
+void registerAuthSession()
+
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
-  );
+    <AppProviders>
+      <RootNavigator />
+    </AppProviders>
+  )
+}
+
+function RootNavigator() {
+  const status = useAuthStore((state) => state.status)
+
+  useEffect(() => {
+    if (status !== 'loading') void SplashScreen.hideAsync()
+  }, [status])
+
+  // Splash stays visible until the session is restored from secure storage.
+  if (status === 'loading') return null
+
+  const signedIn = status === 'signedIn'
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={signedIn}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!signedIn}>
+        <Stack.Screen name="sign-in" />
+      </Stack.Protected>
+    </Stack>
+  )
 }

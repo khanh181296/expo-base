@@ -1,0 +1,58 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "retry": "Try again",
+    "loading": "Loading…",
+    "back": "Back"
+  },
+  "tabs": {
+    "home": "Home",
+    "settings": "Settings"
+  },
+  "auth": {
+    "signInTitle": "Welcome back",
+    "signInSubtitle": "Sign in to continue",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "signOutConfirm": "Do you want to sign out?",
+    "mockHint": "Mock API is on: any email and an 8+ character password works."
+  },
+  "home": {
+    "greeting": "Hello, {{name}}",
+    "subtitle": "Your app starts here."
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "language": "Language",
+    "account": "Account",
+    "version": "Version",
+    "environment": "Environment",
+    "colorScheme": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Invalid email address",
+    "passwordMin": "Password must be at least 8 characters"
+  },
+  "errors": {
+    "network": "No internet connection. Please check your network.",
+    "timeout": "The request timed out. Please try again.",
+    "unauthorized": "Your session has expired. Please sign in again.",
+    "server": "The server ran into a problem. Please try again later.",
+    "unknown": "Something went wrong. Please try again.",
+    "notFound": "This screen does not exist.",
+    "goHome": "Go to home screen",
+    "boundaryTitle": "Something went wrong"
+  }
+}
